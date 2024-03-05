@@ -30,7 +30,7 @@ namespace Deminvincibility.Patches
                 {
                     return true;
                 }
-                
+
                 // If Keep1Health is enabled, prevent the original method from running and don't bother running the second chance protection code
                 if (DeminvicibilityPlugin.Keep1Health.Value)
                 {
@@ -94,26 +94,30 @@ namespace Deminvincibility.Patches
                                     targetChestHealth = chestHealth.Maximum;
                                     break;
                                 default:
-                                    Logger.LogError($"Unhandled SecondChanceRestoreEnum value: {DeminvicibilityPlugin.SecondChanceHealthRestoreAmount.Value}");
+                                    Logger.LogError(
+                                        $"Unhandled SecondChanceRestoreEnum value: {DeminvicibilityPlugin.SecondChanceHealthRestoreAmount.Value}");
                                     break;
                             }
 
                             // Easiest way to set a limb to a specific HP seems to be healing it to full and damaging it back down
                             // Get the protected FullRestoreBodyPart(EBodyPart) method
-                            var bodyPartRestoreMethod = AccessTools.Method(typeof(ActiveHealthController), "FullRestoreBodyPart");
+                            var bodyPartRestoreMethod =
+                                AccessTools.Method(typeof(ActiveHealthController), "FullRestoreBodyPart");
 
                             if (headHealth.Current < targetHeadHealth)
                             {
                                 // Invoke the FullRestoreBodyPart method. Should fully heal the limb
                                 bodyPartRestoreMethod.Invoke(hc, new object[] { EBodyPart.Head });
                                 // Damage the limb with an undefined damage type down to the desired HP
-                                hc.ApplyDamage(EBodyPart.Head, Math.Abs(targetHeadHealth - headHealth.Maximum), new DamageInfo { DamageType = EDamageType.Undefined });
+                                hc.ApplyDamage(EBodyPart.Head, Math.Abs(targetHeadHealth - headHealth.Maximum),
+                                    new DamageInfo { DamageType = EDamageType.Undefined });
                             }
 
                             if (chestHealth.Current < targetChestHealth)
                             {
                                 bodyPartRestoreMethod.Invoke(hc, new object[] { EBodyPart.Chest });
-                                hc.ApplyDamage(EBodyPart.Chest, Math.Abs(targetHeadHealth - headHealth.Maximum), new DamageInfo { DamageType = EDamageType.Undefined });
+                                hc.ApplyDamage(EBodyPart.Chest, Math.Abs(targetHeadHealth - headHealth.Maximum),
+                                    new DamageInfo { DamageType = EDamageType.Undefined });
                             }
                         }
 
@@ -123,7 +127,7 @@ namespace Deminvincibility.Patches
                         _ = Task.Run(async () =>
                         {
                             await Task.Delay(350); // 0.35 seconds of GodMode before protection ends
-                            
+
                             ConsoleScreen.Log("SECOND CHANCE PROTECTION SAVED YOU, GOOD LUCK!");
                             Logger.LogMessage("SECOND CHANCE PROTECTION SAVED YOU, GOOD LUCK!");
                             HasSecondChance = false;

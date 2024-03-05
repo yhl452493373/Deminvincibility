@@ -14,7 +14,8 @@ namespace Deminvincibility.Patches
         }
 
         [PatchPrefix]
-        private static bool Prefix(ActiveHealthController __instance, ref float damage, EBodyPart bodyPart, DamageInfo damageInfo)
+        private static bool Prefix(ActiveHealthController __instance, ref float damage, EBodyPart bodyPart,
+            DamageInfo damageInfo)
         {
             try
             {
@@ -58,7 +59,8 @@ namespace Deminvincibility.Patches
                 {
                     // Head and Chest will never be allowed below 1HP if Keep1Health is enabled
                     // Other limbs will also be protected if Allow0HpLimbs is disabled
-                    if (bodyPart == EBodyPart.Head || bodyPart == EBodyPart.Chest || !DeminvicibilityPlugin.Allow0HpLimbs.Value)
+                    if (bodyPart == EBodyPart.Head || bodyPart == EBodyPart.Chest ||
+                        !DeminvicibilityPlugin.Allow0HpLimbs.Value)
                     {
                         damage = Math.Max(0, currentHealth.Current - 1f);
                     }

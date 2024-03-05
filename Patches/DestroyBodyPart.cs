@@ -37,11 +37,12 @@ namespace Deminvincibility.Patches
                 // If AllowBlacking is disabled, we prevent the original method from running regardless
                 if (!DeminvicibilityPlugin.AllowBlacking.Value)
                 {
-                    return false;  // skip original method
-                } 
+                    return false; // skip original method
+                }
 
                 // If limb blacking is enabled, but Head & Thorax are protected (and being currently hit), we'll skip the original method here
-                if (!DeminvicibilityPlugin.AllowBlackingHeadAndThorax.Value && (bodyPart == EBodyPart.Head || bodyPart == EBodyPart.Chest))
+                if (!DeminvicibilityPlugin.AllowBlackingHeadAndThorax.Value &&
+                    (bodyPart == EBodyPart.Head || bodyPart == EBodyPart.Chest))
                 {
                     return false; // skip original method
                 }
@@ -81,7 +82,6 @@ namespace Deminvincibility.Patches
                 //         return false;
                 //     }
                 // }
-
             }
             catch (Exception e)
             {
@@ -90,6 +90,5 @@ namespace Deminvincibility.Patches
 
             return true;
         }
-
     }
 }

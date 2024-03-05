@@ -15,7 +15,8 @@ namespace Deminvincibility.Patches
         }
 
         [PatchPrefix]
-        private static bool Prefix(ActiveHealthController __instance, EBodyPart bodyPart, ref float value, DamageInfo damageInfo)
+        private static bool Prefix(ActiveHealthController __instance, EBodyPart bodyPart, ref float value,
+            DamageInfo damageInfo)
         {
             try
             {
@@ -43,7 +44,6 @@ namespace Deminvincibility.Patches
                         return false;
                     }
                 }
-                
             }
             catch (Exception e)
             {

@@ -23,7 +23,7 @@ namespace Deminvincibility.Patches
                 {
                     return true;
                 }
-                
+
                 if (DeminvicibilityPlugin.Keep1Health.Value && DeminvicibilityPlugin.MedicineBool.Value)
                 {
                     Logger.LogMessage("DoBleed: Keep1Health & MedicineBool RETURN FALSE");

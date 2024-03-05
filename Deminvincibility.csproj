@@ -36,9 +36,7 @@
     <Reference Include="aki-singleplayer">
       <HintPath>.\references\aki-singleplayer.dll</HintPath>
     </Reference>
-    <Reference Include="Aki.Build">
-      <HintPath>.\references\Aki.Build.dll</HintPath>
-    </Reference>
+
     <Reference Include="Aki.Common">
       <HintPath>.\references\Aki.Common.dll</HintPath>
     </Reference>
@@ -78,6 +76,5 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /y /f &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\Build\&quot;" />
   </Target>
 </Project>
