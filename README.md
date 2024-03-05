@@ -10,6 +10,7 @@ Currently, the following features are implemented:
 - % damage received (means you will only take X% of the actual damage you receive)
 - No Falling Damage (on /off), from https://github.com/dvize/DadGamerMode
 - Infinite Stamina (on / off), from https://github.com/dvize/DadGamerMode
+- COD Mode (on / off), from https://github.com/dvize/DadGamerMode
 - May be more in the near future
 
 ## How do I install this?

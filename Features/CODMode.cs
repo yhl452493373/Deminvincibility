@@ -11,8 +11,8 @@ namespace Deminvincibility.Features
     {
         private Player player;
         private ActiveHealthController healthController;
-        private float timeSinceLastHit;
-        private bool isRegenerating;
+        private float timeSinceLastHit = 0f;
+        private bool isRegenerating = false;
         private float newHealRate;
         private DamageInfo tmpDmg;
         private ValueStruct currentHealth;
