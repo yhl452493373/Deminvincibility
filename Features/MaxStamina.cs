@@ -8,7 +8,7 @@ namespace Deminvincibility.Features
     internal class MaxStaminaComponent : MonoBehaviour
     {
         private Player player;
-        protected static ManualLogSource Logger { get; private set; }
+        private static ManualLogSource Logger { get; set; }
 
         private MaxStaminaComponent()
         {
@@ -40,7 +40,7 @@ namespace Deminvincibility.Features
                 var gameWorld = Singleton<GameWorld>.Instance;
                 gameWorld.GetOrAddComponent<MaxStaminaComponent>();
 
-                Logger.LogDebug("DadGamerMode: Setting Max Stamina");
+                Logger.LogDebug("Deminvincibility: Setting Max Stamina");
             }
         }
     }

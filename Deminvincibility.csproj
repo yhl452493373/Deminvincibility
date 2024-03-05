@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>Deminvincibility</AssemblyName>
@@ -50,8 +49,8 @@
       <HintPath>.\references\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="bsg.console.core">
-      <HintPath>.\references\bsg.console.core.dll</HintPath>
-    </Reference>
+    <HintPath>.\references\bsg.console.core.dll</HintPath>
+  </Reference>
     <Reference Include="Comfort">
       <HintPath>.\references\Comfort.dll</HintPath>
     </Reference>
@@ -60,6 +59,12 @@
     </Reference>
     <Reference Include="ConfigurationManager">
       <HintPath>.\references\ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="ItemComponent.Types">
+        <HintPath>.\references\ItemComponent.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="ItemTemplate.Types">
+        <HintPath>.\references\ItemTemplate.Types.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>.\references\UnityEngine.dll</HintPath>
@@ -75,6 +80,7 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-  </Target>
+    <PropertyGroup>
+        <PostBuildEvent></PostBuildEvent>
+    </PropertyGroup>
 </Project>

@@ -18,15 +18,18 @@ namespace Deminvincibility
         public static ConfigEntry<bool> Keep1Health { get; set; }
         public static ConfigEntry<bool> Allow0HpLimbs { get; set; }
         public static ConfigEntry<bool> AllowBlacking { get; set; }
-
         public static ConfigEntry<bool> AllowBlackingHeadAndThorax { get; set; }
-
         public static ConfigEntry<bool> MedicineBool { get; set; }
         public static ConfigEntry<int> CustomDamageModeVal { get; set; }
         public static ConfigEntry<bool> SecondChanceProtection { get; set; }
         public static ConfigEntry<bool> SecondChanceEffectRemoval { get; set; }
         public static ConfigEntry<bool> NoFallingDamage { get; set; }
         public static ConfigEntry<bool> MaxStaminaToggle { get; set; }
+
+        public static ConfigEntry<bool> CODModeToggle { get; set; }
+        public static ConfigEntry<float> CODModeHealRate { get; set; }
+        public static ConfigEntry<float> CODModeHealWait { get; set; }
+        public static ConfigEntry<bool> CODBleedingDamageToggle { get; set; }
 
         public static ConfigEntry<SecondChanceRestoreEnum> SecondChanceHealthRestoreAmount { get; set; }
 
@@ -115,6 +118,28 @@ namespace Deminvincibility
                         null,
                         new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
             }
+
+            // COD Mode
+            if (placeholder)
+            {
+                CODModeToggle = Config.Bind("3. COD", "CODMode", false, new ConfigDescription(
+                    "Gradually heals all your damage over time including bleeds and fractures",
+                    null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
+
+                CODModeHealRate = Config.Bind("3. COD", "CODMode Heal Rate", 10f, new ConfigDescription(
+                    "Sets How Fast You Heal",
+                    new AcceptableValueRange<float>(0f, 100f),
+                    new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 3 }));
+
+                CODModeHealWait = Config.Bind("3. COD", "CODMode Heal Wait", 10f, new ConfigDescription(
+                    "Sets How Long You Have to Wait in Seconds with no damage before healing starts",
+                    new AcceptableValueRange<float>(0f, 600f),
+                    new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
+
+                CODBleedingDamageToggle = Config.Bind("3. COD", "CODMode Bleeding Damage", false, new ConfigDescription(
+                    "You still get bleeding and fractures for COD Mode",
+                    null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
+            }
         }
 
         internal class NewGamePatch : ModulePatch
@@ -125,6 +150,7 @@ namespace Deminvincibility
             [PatchPrefix]
             private static void PatchPrefix()
             {
+                CODModeComponent.Enable();
                 NoFallingDamageComponent.Enable();
                 MaxStaminaComponent.Enable();
             }

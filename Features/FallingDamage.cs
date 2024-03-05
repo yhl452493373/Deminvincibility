@@ -8,7 +8,7 @@ namespace Deminvincibility.Features
     internal class NoFallingDamageComponent : MonoBehaviour
     {
         private Player player;
-        protected static ManualLogSource Logger { get; private set; }
+        private static ManualLogSource Logger { get; set; }
 
         private NoFallingDamageComponent()
         {
@@ -21,7 +21,7 @@ namespace Deminvincibility.Features
         private void Start()
         {
             player = Singleton<GameWorld>.Instance.MainPlayer;
-            Logger.LogDebug("DadGamerMode: Setting No Falling Damage");
+            Logger.LogDebug("Deminvincibility: Setting No Falling Damage");
         }
 
         private void Update()
@@ -45,7 +45,7 @@ namespace Deminvincibility.Features
                 var gameWorld = Singleton<GameWorld>.Instance;
 
                 var player = gameWorld.MainPlayer;
-                Logger.LogDebug("DadGamerMode: Setting Falling Damage To Normal");
+                Logger.LogDebug("Deminvincibility: Setting Falling Damage To Normal");
 
                 player.ActiveHealthController.FallSafeHeight = 1.8f;
             }
