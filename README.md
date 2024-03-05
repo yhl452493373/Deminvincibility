@@ -8,6 +8,8 @@ Currently, the following features are implemented:
 - Keep 1 Health (on / off)
 - Keep 1 Health selection (Head, Thorax, Head & Thorax, All)
 - % damage received (means you will only take X% of the actual damage you receive)
+- No Falling Damage (on /off), from https://github.com/dvize/DadGamerMode
+- Infinite Stamina (on / off), from https://github.com/dvize/DadGamerMode
 - May be more in the near future
 
 ## How do I install this?
@@ -24,6 +26,7 @@ Copy all DLL files from the following SPT directories into `\references`:
 
 ## Credits
 A huge thanks to the following people:
+- https://github.com/dvize/DadGamerMode
 - Props for developing DadGamerMode. Without him and his experience, this wouldn't have been possible!
 
 - [Dirtbikercj](https://hub.sp-tarkov.com/user/37201-dirtbikercj/) and [DrakiaXYZ](https://hub.sp-tarkov.com/user/30839-drakiaxyz/) from the [SPT Pub](https://discord.com/invite/Xn9msqQZan) for their troubleshooting and coding help. I owe everything to these people. <3
