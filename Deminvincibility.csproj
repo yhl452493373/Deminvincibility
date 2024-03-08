@@ -6,7 +6,7 @@
         <Version>1.0.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
-        <DependencyVersion>spt</DependencyVersion>
+        <DependencyVersion>0.14.1.1.28965-sit</DependencyVersion>
     </PropertyGroup>
 
     <ItemGroup>
