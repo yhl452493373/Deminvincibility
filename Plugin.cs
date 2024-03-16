@@ -9,7 +9,7 @@ using EFT;
 
 namespace Deminvincibility
 {
-    [BepInPlugin("com.hazelify.deminvincibility", "Deminvincibility", "1.6.0")]
+    [BepInPlugin("com.hazelify.deminvincibility", "Deminvincibility", "1.7.0")]
     public class DeminvicibilityPlugin : BaseUnityPlugin
     {
         private static string credits = "Thanks Props <3 Ily https://github.com/dvize/DadGamerMode";
@@ -24,11 +24,17 @@ namespace Deminvincibility
         public static ConfigEntry<bool> SecondChanceEffectRemoval { get; set; }
         public static ConfigEntry<bool> NoFallingDamage { get; set; }
         public static ConfigEntry<bool> MaxStaminaToggle { get; set; }
+        public static ConfigEntry<bool> MaxHydrationToggle { get; set; }
+
+        public static ConfigEntry<bool> MaxEnergyToggle { get; set; }
+
 
         public static ConfigEntry<bool> CODModeToggle { get; set; }
         public static ConfigEntry<float> CODModeHealRate { get; set; }
         public static ConfigEntry<float> CODModeHealWait { get; set; }
-        public static ConfigEntry<bool> CODBleedingDamageToggle { get; set; }
+        public static ConfigEntry<bool> CODHealEffectsToggle { get; set; }
+
+        public static ConfigEntry<int> MagazineSpeed { get; set; }
 
         public static ConfigEntry<SecondChanceRestoreEnum> SecondChanceHealthRestoreAmount { get; set; }
 
@@ -49,87 +55,88 @@ namespace Deminvincibility
 
         private void InitConfig()
         {
-            // - Keep1Health section
+            // 1. Health
             Keep1Health = Config.Bind("1. Health", "1 HP Mode", false,
                 new ConfigDescription("Enable to keep yourself from dying",
                     null,
-                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 7 }));
-
+                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 6 }));
             Allow0HpLimbs = Config.Bind("1. Health", "Allow 0hp on limbs", false,
                 new ConfigDescription("If enabled, Keep 1 Health on will allow arms and legs to hit 0 hp.",
                     null,
-                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 6 }));
-
+                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 5 }));
             AllowBlacking = Config.Bind("1. Health", "Allow blacking of limbs", false,
                 new ConfigDescription(
                     "If enabled, Keep 1 Health on will cause blacking of limbs when they reach 0hp.",
                     null,
-                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 5 }));
-
+                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
             AllowBlackingHeadAndThorax = Config.Bind("1. Health", "Allow blacking of Head & Thorax", false,
                 new ConfigDescription(
                     "If enabled, Head & Thorax will be blacked out when they reach 0hp. This setting is ignored if \'Allow blacking of limbs\' is disabled.",
                     null,
-                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
-
-            MedicineBool = Config.Bind("1. Health", "Ignore health side effects?", false,
-                new ConfigDescription(
-                    "If enabled, fractures, bleeds and other forms of side effects to your health will be auto-healed.\n\nPSA: Disabling this could cause unintended side effects, use caution.",
-                    null,
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
-
-            CustomDamageModeVal = Config.Bind("1. Health", "% Damage received", 100, new ConfigDescription(
+            MedicineBool = Config.Bind("1. Health", "Ignore health side effects", false,
+                new ConfigDescription(
+                    "If enabled, fractures, you'll not get bleeds, fractures and other forms of side effects to your health.\n\nPSA: Disabling this could cause unintended side effects, use caution.",
+                    null,
+                    new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
+            CustomDamageModeVal = Config.Bind("1. Health", "Damage received percent", 100, new ConfigDescription(
                 "Set perceived damage in percent",
                 new AcceptableValueRange<int>(1, 100),
                 new ConfigurationManagerAttributes
-                    { IsAdvanced = false, ShowRangeAsPercent = true, Order = 2 }));
+                    { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
 
-            NoFallingDamage = Config.Bind("1. Health", "No Falling Damage", false, new ConfigDescription(
-                "No Falling Damage",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
-
-            MaxStaminaToggle = Config.Bind("1. Health", "Infinite Stamina", false, new ConfigDescription(
-                "Stamina Never Drains",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
-
-            // Protection disable
-            SecondChanceProtection = Config.Bind("2. Death", "Enable second chance protection?", false,
+            // Death
+            SecondChanceProtection = Config.Bind("2. Death", "Enable second chance protection", false,
                 new ConfigDescription(
                     "If enabled, if you take a hit that would normally kill you, you\'ll be given a second chance to survive.",
                     null,
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
-
-            SecondChanceEffectRemoval = Config.Bind("2. Death", "Second chance health effect removal", true,
+            SecondChanceEffectRemoval = Config.Bind("2. Death", "Health effect removal", true,
                 new ConfigDescription(
                     "If enabled, all negative health effects (bleeds, fractures, etc.) will be removed from your character when second chance triggers.",
                     null,
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
-
             SecondChanceHealthRestoreAmount = Config.Bind("2. Death",
-                "Second chance health restore on critical limbs", SecondChanceRestoreEnum.OneHealth,
+                "Health restore on critical limbs", SecondChanceRestoreEnum.OneHealth,
                 new ConfigDescription(
                     "Choose what HP should be set on the Head and Thorax when second chance protection triggers. Will never remove health if the limb has more than the set amount. \n\n\'None\' and \'1HP\' options are risky if effect removal is disabled.",
                     null,
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
 
-            // COD Mode
-            CODModeToggle = Config.Bind("3. COD", "CODMode", false, new ConfigDescription(
-                "Gradually heals all your damage over time including bleeds and fractures",
+            // COD
+            CODModeToggle = Config.Bind("3. COD", "Enable COD Mode", false, new ConfigDescription(
+                "If enabled, gradually heals all your damage and negative effects over time including bleeds, fractures and others",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
-
-            CODModeHealRate = Config.Bind("3. COD", "CODMode Heal Rate", 10f, new ConfigDescription(
-                "Sets How Fast You Heal",
-                new AcceptableValueRange<float>(0f, 100f),
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 3 }));
-
-            CODModeHealWait = Config.Bind("3. COD", "CODMode Heal Wait", 10f, new ConfigDescription(
+            CODHealEffectsToggle = Config.Bind("3. COD", "Heal Effects", false,
+                new ConfigDescription(
+                    "If enabled, Remove all negative health effects when body part begin to heal",
+                    null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
+            CODModeHealWait = Config.Bind("3. COD", "Heal Wait", 10f, new ConfigDescription(
                 "Sets How Long You Have to Wait in Seconds with no damage before healing starts",
                 new AcceptableValueRange<float>(0f, 600f),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
+            CODModeHealRate = Config.Bind("3. COD", "Heal Rate", 10f, new ConfigDescription(
+                "Sets How Fast You Heal",
+                new AcceptableValueRange<float>(0f, 100f),
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 1 }));
 
-            CODBleedingDamageToggle = Config.Bind("3. COD", "CODMode Bleeding Damage", false, new ConfigDescription(
-                "You still get bleeding and fractures for COD Mode",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
+            // QOL
+            MaxStaminaToggle = Config.Bind("4. QOL", "Infinite Stamina", false, new ConfigDescription(
+                "Stamina never drains",
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 5 }));
+            MaxEnergyToggle = Config.Bind("4. QOL", "Infinite Energy", false, new ConfigDescription(
+                "Energy never drains so no eating",
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
+            MaxHydrationToggle = Config.Bind("4. QOL", "Infinite Hydration", false, new ConfigDescription(
+                "Hydration never drains so no drinking",
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
+            NoFallingDamage = Config.Bind("4. QOL", "No Falling Damage", false, new ConfigDescription(
+                "No falling damage",
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
+            MagazineSpeed = Config.Bind("4. QOL", "Magazine Speed", 100, new ConfigDescription(
+                "Magazine load and unload speed multiplier (smaller is faster)",
+                new AcceptableValueRange<int>(0, 100),
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
         }
 
         internal class NewGamePatch : ModulePatch
@@ -143,6 +150,9 @@ namespace Deminvincibility
                 CODModeComponent.Enable();
                 NoFallingDamageComponent.Enable();
                 MaxStaminaComponent.Enable();
+                HydrationComponent.Enable();
+                EnergyComponent.Enable();
+                MagReloadSpeed.Enable();
             }
         }
 

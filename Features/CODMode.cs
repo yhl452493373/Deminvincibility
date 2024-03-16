@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using Comfort.Common;
 using EFT;
 using EFT.HealthSystem;
@@ -9,21 +8,22 @@ namespace Deminvincibility.Features
 {
     internal class CODModeComponent : MonoBehaviour
     {
-        private Player player;
-        private ActiveHealthController healthController;
-        private float timeSinceLastHit = 0f;
-        private bool isRegenerating = false;
-        private float newHealRate;
-        private DamageInfo tmpDmg;
-        private ValueStruct currentHealth;
+        private static Player player;
+        private static ActiveHealthController healthController;
+        private static float timeSinceLastHit = 0f;
+        private static bool isRegenerating = false;
+        private static float newHealRate;
+        private static DamageInfo tmpDmg;
+        private static HealthValue currentHealth;
+        private static int frameCount = 0;
 
-        private readonly EBodyPart[] bodyPartsDict =
+        private static readonly EBodyPart[] bodyPartsDict =
         {
             EBodyPart.Stomach, EBodyPart.Chest, EBodyPart.Head, EBodyPart.RightLeg,
             EBodyPart.LeftLeg, EBodyPart.LeftArm, EBodyPart.RightArm
         };
 
-        private static ManualLogSource Logger { get; set; }
+        protected static ManualLogSource Logger { get; private set; }
 
         private CODModeComponent()
         {
@@ -40,7 +40,7 @@ namespace Deminvincibility.Features
                 var gameWorld = Singleton<GameWorld>.Instance;
                 gameWorld.GetOrAddComponent<CODModeComponent>();
 
-                Logger.LogDebug("Deminvincibility: CODModeComponent enabled");
+                Logger.LogDebug("DadGamerMode: CODModeComponent enabled");
             }
         }
 
@@ -48,51 +48,61 @@ namespace Deminvincibility.Features
         {
             player = Singleton<GameWorld>.Instance.MainPlayer;
             healthController = player.ActiveHealthController;
+            isRegenerating = false;
+            timeSinceLastHit = 0f;
+            newHealRate = 0f;
+            tmpDmg = new DamageInfo();
+            currentHealth = null;
+            frameCount = 0;
 
             player.OnPlayerDeadOrUnspawn += Player_OnPlayerDeadOrUnspawn;
             player.BeingHitAction += Player_BeingHitAction;
         }
 
-        private async void Update()
+        private void Update()
         {
             if (DeminvicibilityPlugin.CODModeToggle.Value)
             {
+                frameCount++;
                 timeSinceLastHit += Time.unscaledDeltaTime;
 
-                if (timeSinceLastHit >= DeminvicibilityPlugin.CODModeHealWait.Value)
+                if (frameCount >= 60) // Check every 60 frames instead
                 {
-                    if (!isRegenerating)
-                    {
-                        isRegenerating = true;
-                    }
+                    frameCount = 0;
 
-                    await StartHealingAsync();
+                    if (timeSinceLastHit >= DeminvicibilityPlugin.CODModeHealWait.Value)
+                    {
+                        if (!isRegenerating)
+                        {
+                            isRegenerating = true;
+                        }
+
+                        StartHealing();
+                    }
                 }
             }
         }
 
-        private async Task StartHealingAsync()
+        private void StartHealing()
         {
             if (isRegenerating && DeminvicibilityPlugin.CODModeToggle.Value)
             {
-                newHealRate = DeminvicibilityPlugin.CODModeHealRate.Value * Time.unscaledDeltaTime;
+                newHealRate = DeminvicibilityPlugin.CODModeHealRate.Value;
 
                 foreach (var limb in bodyPartsDict)
                 {
-                    currentHealth = healthController.GetBodyPartHealth(limb, false);
-
-                    if (!DeminvicibilityPlugin.CODBleedingDamageToggle.Value)
-                    {
-                        healthController.RemoveNegativeEffects(limb);
-                    }
+                    currentHealth = healthController.Dictionary_0[limb].Health;
 
                     if (!currentHealth.AtMaximum)
                     {
-                        healthController.ChangeHealth(limb, newHealRate, tmpDmg);
+                        currentHealth.Current += newHealRate;
+                        
+                        if (DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+                        {
+                            healthController.RemoveNegativeEffects(limb);
+                        }
                     }
                 }
-
-                await Task.Yield();
             }
         }
 
