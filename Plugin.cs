@@ -76,7 +76,7 @@ namespace Deminvincibility
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
             MedicineBool = Config.Bind("1. Health", "Ignore health side effects", false,
                 new ConfigDescription(
-                    "If enabled, fractures, you'll not get bleeds, fractures and other forms of side effects to your health.\n\nPSA: Disabling this could cause unintended side effects, use caution.",
+                    "If enabled, you'll not get bleeds, fractures and other forms of side effects to your health.\n\nPSA: Disabling this could cause unintended side effects, use caution.",
                     null,
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
             CustomDamageModeVal = Config.Bind("1. Health", "Damage received percent", 100, new ConfigDescription(
@@ -147,12 +147,12 @@ namespace Deminvincibility
             [PatchPrefix]
             private static void PatchPrefix()
             {
-                CODModeComponent.Enable();
+                CodModeComponent.Enable();
                 NoFallingDamageComponent.Enable();
                 MaxStaminaComponent.Enable();
                 HydrationComponent.Enable();
                 EnergyComponent.Enable();
-                MagReloadSpeed.Enable();
+                MagazineSpeedComponent.Enable();
             }
         }
 

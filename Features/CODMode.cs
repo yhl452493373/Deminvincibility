@@ -1,131 +1,108 @@
-﻿using BepInEx.Logging;
-using Comfort.Common;
+﻿using Comfort.Common;
 using EFT;
 using EFT.HealthSystem;
 using UnityEngine;
 
-namespace Deminvincibility.Features
+namespace Deminvincibility.Features;
+
+internal class CodModeComponent : BaseComponent
 {
-    internal class CODModeComponent : MonoBehaviour
+    private static ActiveHealthController healthController;
+    private static float timeSinceLastHit;
+    private static bool isRegenerating;
+    private static float newHealRate;
+    private static DamageInfo tmpDmg;
+    private static HealthValue currentHealth;
+
+    private static readonly EBodyPart[] bodyPartsDict =
     {
-        private static Player player;
-        private static ActiveHealthController healthController;
-        private static float timeSinceLastHit = 0f;
-        private static bool isRegenerating = false;
-        private static float newHealRate;
-        private static DamageInfo tmpDmg;
-        private static HealthValue currentHealth;
-        private static int frameCount = 0;
+        EBodyPart.Stomach, EBodyPart.Chest, EBodyPart.Head, EBodyPart.RightLeg,
+        EBodyPart.LeftLeg, EBodyPart.LeftArm, EBodyPart.RightArm
+    };
 
-        private static readonly EBodyPart[] bodyPartsDict =
+    internal static void Enable()
+    {
+        if (Singleton<IBotGame>.Instantiated)
         {
-            EBodyPart.Stomach, EBodyPart.Chest, EBodyPart.Head, EBodyPart.RightLeg,
-            EBodyPart.LeftLeg, EBodyPart.LeftArm, EBodyPart.RightArm
-        };
+            var gameWorld = Singleton<GameWorld>.Instance;
+            gameWorld.GetOrAddComponent<CodModeComponent>();
 
-        protected static ManualLogSource Logger { get; private set; }
-
-        private CODModeComponent()
-        {
-            if (Logger == null)
-            {
-                Logger = BepInEx.Logging.Logger.CreateLogSource(nameof(CODModeComponent));
-            }
+            Logger.LogInfo("Deminvincibility: CODModeComponent enabled");
         }
+    }
 
-        internal static void Enable()
+    private void Start()
+    {
+        base.Start();
+        healthController = player.ActiveHealthController;
+        isRegenerating = false;
+        timeSinceLastHit = 0f;
+        newHealRate = 0f;
+        tmpDmg = new DamageInfo();
+        currentHealth = null;
+
+        player.OnPlayerDeadOrUnspawn += Player_OnPlayerDeadOrUnspawn;
+        player.BeingHitAction += Player_BeingHitAction;
+    }
+
+    private void Update()
+    {
+        if (DeminvicibilityPlugin.CODModeToggle.Value)
         {
-            if (Singleton<IBotGame>.Instantiated)
+            timeSinceLastHit += Time.unscaledDeltaTime;
+
+            if (timeSinceLastHit >= DeminvicibilityPlugin.CODModeHealWait.Value)
             {
-                var gameWorld = Singleton<GameWorld>.Instance;
-                gameWorld.GetOrAddComponent<CODModeComponent>();
-
-                Logger.LogDebug("DadGamerMode: CODModeComponent enabled");
-            }
-        }
-
-        private void Start()
-        {
-            player = Singleton<GameWorld>.Instance.MainPlayer;
-            healthController = player.ActiveHealthController;
-            isRegenerating = false;
-            timeSinceLastHit = 0f;
-            newHealRate = 0f;
-            tmpDmg = new DamageInfo();
-            currentHealth = null;
-            frameCount = 0;
-
-            player.OnPlayerDeadOrUnspawn += Player_OnPlayerDeadOrUnspawn;
-            player.BeingHitAction += Player_BeingHitAction;
-        }
-
-        private void Update()
-        {
-            if (DeminvicibilityPlugin.CODModeToggle.Value)
-            {
-                frameCount++;
-                timeSinceLastHit += Time.unscaledDeltaTime;
-
-                if (frameCount >= 60) // Check every 60 frames instead
+                if (!isRegenerating)
                 {
-                    frameCount = 0;
+                    isRegenerating = true;
+                }
 
-                    if (timeSinceLastHit >= DeminvicibilityPlugin.CODModeHealWait.Value)
-                    {
-                        if (!isRegenerating)
-                        {
-                            isRegenerating = true;
-                        }
+                StartHealing();
+            }
+        }
+    }
 
-                        StartHealing();
-                    }
+    private void StartHealing()
+    {
+        if (isRegenerating && DeminvicibilityPlugin.CODModeToggle.Value)
+        {
+            newHealRate = DeminvicibilityPlugin.CODModeHealRate.Value;
+
+            foreach (var limb in bodyPartsDict)
+            {
+                currentHealth = healthController.Dictionary_0[limb].Health;
+                if (!currentHealth.AtMaximum)
+                {
+                    currentHealth.Current += newHealRate;
+                }
+
+                if (currentHealth.AtMaximum && DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+                {
+                    healthController.RemoveNegativeEffects(limb);
                 }
             }
         }
+    }
 
-        private void StartHealing()
+    private void Disable()
+    {
+        if (player != null)
         {
-            if (isRegenerating && DeminvicibilityPlugin.CODModeToggle.Value)
-            {
-                newHealRate = DeminvicibilityPlugin.CODModeHealRate.Value;
-
-                foreach (var limb in bodyPartsDict)
-                {
-                    currentHealth = healthController.Dictionary_0[limb].Health;
-
-                    if (!currentHealth.AtMaximum)
-                    {
-                        currentHealth.Current += newHealRate;
-                        
-                        if (DeminvicibilityPlugin.CODHealEffectsToggle.Value)
-                        {
-                            healthController.RemoveNegativeEffects(limb);
-                        }
-                    }
-                }
-            }
+            player.OnPlayerDeadOrUnspawn -= Player_OnPlayerDeadOrUnspawn;
+            player.BeingHitAction -= Player_BeingHitAction;
         }
+    }
 
-        private void Disable()
-        {
-            if (player != null)
-            {
-                player.OnPlayerDeadOrUnspawn -= Player_OnPlayerDeadOrUnspawn;
-                player.BeingHitAction -= Player_BeingHitAction;
-            }
-        }
-
-        private void Player_BeingHitAction(DamageInfo arg1, EBodyPart arg2, float arg3)
-        {
-            //Logger.LogDebug("DadGamerMode: Player_BeingHitAction called");
-            timeSinceLastHit = 0f;
-            isRegenerating = false;
-        }
+    private void Player_BeingHitAction(DamageInfo arg1, EBodyPart arg2, float arg3)
+    {
+        timeSinceLastHit = 0f;
+        isRegenerating = false;
+    }
 
 
-        private void Player_OnPlayerDeadOrUnspawn(Player player)
-        {
-            Disable();
-        }
+    private void Player_OnPlayerDeadOrUnspawn(Player player)
+    {
+        Disable();
     }
 }

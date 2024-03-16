@@ -1,54 +1,40 @@
-﻿using BepInEx.Logging;
-using Comfort.Common;
+﻿using Comfort.Common;
 using EFT;
-using UnityEngine;
 
-namespace Deminvincibility.Features
+namespace Deminvincibility.Features;
+
+internal class NoFallingDamageComponent : BaseComponent
 {
-    internal class NoFallingDamageComponent : MonoBehaviour
+    private void Start()
     {
-        private Player player;
-        private static ManualLogSource Logger { get; set; }
+        base.Start();
+        Logger.LogInfo("Deminvincibility: Setting No Falling Damage");
+    }
 
-        private NoFallingDamageComponent()
+    private void Update()
+    {
+        player.ActiveHealthController.FallSafeHeight = DeminvicibilityPlugin.NoFallingDamage.Value ? 999999f : 1.8f;
+    }
+
+    internal static void Enable()
+    {
+        if (Singleton<IBotGame>.Instantiated)
         {
-            if (Logger == null)
-            {
-                Logger = BepInEx.Logging.Logger.CreateLogSource(nameof(NoFallingDamageComponent));
-            }
+            var gameWorld = Singleton<GameWorld>.Instance;
+            gameWorld.GetOrAddComponent<NoFallingDamageComponent>();
         }
+    }
 
-        private void Start()
+    private static void Disable()
+    {
+        if (!DeminvicibilityPlugin.NoFallingDamage.Value)
         {
-            player = Singleton<GameWorld>.Instance.MainPlayer;
-            Logger.LogDebug("Deminvincibility: Setting No Falling Damage");
-        }
+            var gameWorld = Singleton<GameWorld>.Instance;
 
-        private void Update()
-        {
-            player.ActiveHealthController.FallSafeHeight = DeminvicibilityPlugin.NoFallingDamage.Value ? 999999f : 1.8f;
-        }
+            var player = gameWorld.MainPlayer;
+            Logger.LogDebug("Deminvincibility: Setting Falling Damage To Normal");
 
-        internal static void Enable()
-        {
-            if (Singleton<IBotGame>.Instantiated)
-            {
-                var gameWorld = Singleton<GameWorld>.Instance;
-                gameWorld.GetOrAddComponent<NoFallingDamageComponent>();
-            }
-        }
-
-        private static void Disable()
-        {
-            if (!DeminvicibilityPlugin.NoFallingDamage.Value)
-            {
-                var gameWorld = Singleton<GameWorld>.Instance;
-
-                var player = gameWorld.MainPlayer;
-                Logger.LogDebug("Deminvincibility: Setting Falling Damage To Normal");
-
-                player.ActiveHealthController.FallSafeHeight = 1.8f;
-            }
+            player.ActiveHealthController.FallSafeHeight = 1.8f;
         }
     }
 }
