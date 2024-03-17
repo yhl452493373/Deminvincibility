@@ -7,14 +7,14 @@ namespace Deminvincibility.Features;
 
 internal class CodModeComponent : BaseComponent
 {
-    private static ActiveHealthController healthController;
-    private static float timeSinceLastHit;
-    private static bool isRegenerating;
-    private static float newHealRate;
-    private static DamageInfo tmpDmg;
-    private static HealthValue currentHealth;
+    private ActiveHealthController healthController;
+    private float timeSinceLastHit;
+    private bool isRegenerating;
+    private float newHealRate;
+    private DamageInfo tmpDmg;
+    private HealthValue currentHealth;
 
-    private static readonly EBodyPart[] bodyPartsDict =
+    private readonly EBodyPart[] bodyPartsDict =
     {
         EBodyPart.Stomach, EBodyPart.Chest, EBodyPart.Head, EBodyPart.RightLeg,
         EBodyPart.LeftLeg, EBodyPart.LeftArm, EBodyPart.RightArm
@@ -35,11 +35,6 @@ internal class CodModeComponent : BaseComponent
     {
         base.Start();
         healthController = player.ActiveHealthController;
-        isRegenerating = false;
-        timeSinceLastHit = 0f;
-        newHealRate = 0f;
-        tmpDmg = new DamageInfo();
-        currentHealth = null;
 
         player.OnPlayerDeadOrUnspawn += Player_OnPlayerDeadOrUnspawn;
         player.BeingHitAction += Player_BeingHitAction;
@@ -77,7 +72,7 @@ internal class CodModeComponent : BaseComponent
                     currentHealth.Current += newHealRate;
                 }
 
-                if (currentHealth.AtMaximum && DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+                if (DeminvicibilityPlugin.CODHealEffectsToggle.Value)
                 {
                     healthController.RemoveNegativeEffects(limb);
                 }
