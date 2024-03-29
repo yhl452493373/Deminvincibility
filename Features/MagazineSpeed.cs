@@ -30,8 +30,7 @@ internal class MagazineSpeedComponent : BaseComponent
         {
             var gameWorld = Singleton<GameWorld>.Instance;
             gameWorld.GetOrAddComponent<MagazineSpeedComponent>();
-
-            Logger.LogDebug("Deminvincibility: Reset Magazine Speed");
+            Logger.LogDebug("Deminvincibility: Change Magazine Speed");
         }
     }
 }

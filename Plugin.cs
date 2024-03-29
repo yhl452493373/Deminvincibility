@@ -1,11 +1,15 @@
 ﻿using System.Reflection;
-using Aki.Reflection.Patching;
 using BepInEx;
 using BepInEx.Configuration;
 using Deminvincibility.Model;
 using Deminvincibility.Patches;
 using Deminvincibility.Features;
 using EFT;
+#if SIT
+using StayInTarkov;
+#else
+using Aki.Reflection.Patching;
+#endif
 
 namespace Deminvincibility
 {

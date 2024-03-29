@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Reflection;
-using Aki.Reflection.Patching;
 using EFT;
 using EFT.HealthSystem;
 using HarmonyLib;
+#if SIT
+using StayInTarkov;
+#else
+using Aki.Reflection.Patching;
+#endif
 
 namespace Deminvincibility.Patches
 {
