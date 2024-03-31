@@ -9,7 +9,7 @@ using Aki.Reflection.Patching;
 
 namespace Deminvincibility.Patches
 {
-    internal class AfterGameStartedPatch : ModulePatch
+    internal class OnGameStarted : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {

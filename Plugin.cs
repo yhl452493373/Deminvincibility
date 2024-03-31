@@ -32,6 +32,8 @@ namespace Deminvincibility
 
         public static ConfigEntry<int> MagazineSpeed { get; set; }
 
+        public static ConfigEntry<int> TotalWeightReductionPercentage { get; set; }
+
         public static ConfigEntry<SecondChanceRestoreEnum> SecondChanceHealthRestoreAmount { get; set; }
 
         private void Awake()
@@ -46,7 +48,7 @@ namespace Deminvincibility
             new ApplyDamage().Enable();
             new DoFracture().Enable();
             new Kill().Enable();
-            new AfterGameStartedPatch().Enable();
+            new OnGameStarted().Enable();
         }
 
         private void InitConfig()
@@ -102,39 +104,43 @@ namespace Deminvincibility
             // COD
             CODModeToggle = Config.Bind("3. COD", "Enable COD Mode", false, new ConfigDescription(
                 "If enabled, gradually heals all your damage and negative effects over time including bleeds, fractures and others",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 10 }));
             CODHealEffectsToggle = Config.Bind("3. COD", "Heal Effects", false,
                 new ConfigDescription(
                     "If enabled, Remove all negative health effects when body part begin to heal",
-                    null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
+                    null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 9 }));
             CODModeHealWait = Config.Bind("3. COD", "Heal Wait", 10f, new ConfigDescription(
                 "Sets How Long You Have to Wait in Seconds with no damage before healing starts",
                 new AcceptableValueRange<float>(0f, 600f),
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 8 }));
             CODModeHealRate = Config.Bind("3. COD", "Heal Rate", 10f, new ConfigDescription(
                 "Sets How Fast You Heal",
                 new AcceptableValueRange<float>(0f, 100f),
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 1 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 7 }));
 
             // QOL
             MaxStaminaToggle = Config.Bind("4. QOL", "Infinite Stamina", false, new ConfigDescription(
                 "Stamina never drains",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 5 }));
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 6 }));
             MaxEnergyToggle = Config.Bind("4. QOL", "Infinite Energy", false, new ConfigDescription(
                 "Energy never drains so no eating",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 5 }));
             MaxHydrationToggle = Config.Bind("4. QOL", "Infinite Hydration", false, new ConfigDescription(
                 "Hydration never drains so no drinking",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
             NoFallingDamage = Config.Bind("4. QOL", "No Falling Damage", false, new ConfigDescription(
                 "No falling damage",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
             MagazineSpeed = Config.Bind("4. QOL", "Magazine Speed", 100, new ConfigDescription(
                 "Magazine load and unload speed multiplier (smaller is faster)",
                 new AcceptableValueRange<int>(0, 100),
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 2 }));
+
+            TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight Reduction", 0, new ConfigDescription(
+                "Percentage to reduce your character's total weight", new AcceptableValueRange<int>(0, 100),
+                new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
         }
-        
+
         internal sealed class ConfigurationManagerAttributes
         {
             public bool? ShowRangeAsPercent;

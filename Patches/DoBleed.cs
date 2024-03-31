@@ -14,7 +14,7 @@ namespace Deminvincibility.Patches
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(ActiveHealthController), "DoBleed");
+            return AccessTools.Method(typeof(ActiveHealthController), nameof(ActiveHealthController.DoBleed));
         }
 
         [PatchPrefix]
