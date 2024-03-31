@@ -27,7 +27,7 @@
             </PropertyGroup>
             <ItemGroup>
                 <Reference Include=".\references\$(DependencyVersion)\StayInTarkov.dll">
-                    <Private>False</Private>
+                    <Private>True</Private>
                 </Reference>
             </ItemGroup>
         </When>
@@ -79,5 +79,9 @@
             <HintPath>.\references\UnityEngine.TextRenderingModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="obj\"/>
     </ItemGroup>
 </Project>

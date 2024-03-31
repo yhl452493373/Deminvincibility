@@ -25,7 +25,7 @@ namespace Deminvincibility.Patches
         }
 
         [PatchPrefix]
-        public static bool Prefix(ActiveHealthController __instance, EDamageType damageType)
+        private static bool Prefix(ActiveHealthController __instance, EDamageType damageType)
         {
             try
             {

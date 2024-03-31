@@ -17,12 +17,9 @@ internal class MaxStaminaComponent : BaseComponent
 
     public static void Enable()
     {
-        if (Singleton<IBotGame>.Instantiated)
-        {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            gameWorld.GetOrAddComponent<MaxStaminaComponent>();
+        var gameWorld = Singleton<GameWorld>.Instance;
+        gameWorld.GetOrAddComponent<MaxStaminaComponent>();
 
-            Logger.LogDebug("Deminvincibility: Setting Max Stamina");
-        }
+        Logger.LogDebug("Deminvincibility: Setting Max Stamina");
     }
 }

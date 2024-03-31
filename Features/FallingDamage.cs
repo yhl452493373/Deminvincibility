@@ -18,11 +18,8 @@ internal class NoFallingDamageComponent : BaseComponent
 
     internal static void Enable()
     {
-        if (Singleton<IBotGame>.Instantiated)
-        {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            gameWorld.GetOrAddComponent<NoFallingDamageComponent>();
-        }
+        var gameWorld = Singleton<GameWorld>.Instance;
+        gameWorld.GetOrAddComponent<NoFallingDamageComponent>();
     }
 
     private static void Disable()

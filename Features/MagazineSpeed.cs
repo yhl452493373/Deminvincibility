@@ -26,11 +26,8 @@ internal class MagazineSpeedComponent : BaseComponent
 
     public static void Enable()
     {
-        if (Singleton<IBotGame>.Instantiated)
-        {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            gameWorld.GetOrAddComponent<MagazineSpeedComponent>();
-            Logger.LogDebug("Deminvincibility: Change Magazine Speed");
-        }
+        var gameWorld = Singleton<GameWorld>.Instance;
+        gameWorld.GetOrAddComponent<MagazineSpeedComponent>();
+        Logger.LogDebug("Deminvincibility: Setting Magazine Speed");
     }
 }

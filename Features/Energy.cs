@@ -19,12 +19,9 @@ internal class EnergyComponent : BaseComponent
 
     public static void Enable()
     {
-        if (Singleton<IBotGame>.Instantiated)
-        {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            gameWorld.GetOrAddComponent<EnergyComponent>();
+        var gameWorld = Singleton<GameWorld>.Instance;
+        gameWorld.GetOrAddComponent<EnergyComponent>();
 
-            Logger.LogDebug("Deminvincibility: Setting Energy Component");
-        }
+        Logger.LogDebug("Deminvincibility: Setting Energy Component");
     }
 }

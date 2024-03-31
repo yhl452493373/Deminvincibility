@@ -1,15 +1,7 @@
-﻿using System.Reflection;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
 using Deminvincibility.Model;
 using Deminvincibility.Patches;
-using Deminvincibility.Features;
-using EFT;
-#if SIT
-using StayInTarkov;
-#else
-using Aki.Reflection.Patching;
-#endif
 
 namespace Deminvincibility
 {
@@ -50,11 +42,11 @@ namespace Deminvincibility
 
         private void ApplyPatches()
         {
-            new NewGamePatch().Enable();
             new DestroyBodyPartPatch().Enable();
             new ApplyDamage().Enable();
             new DoFracture().Enable();
             new Kill().Enable();
+            new AfterGameStartedPatch().Enable();
         }
 
         private void InitConfig()
@@ -142,24 +134,7 @@ namespace Deminvincibility
                 new AcceptableValueRange<int>(0, 100),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
         }
-
-        internal class NewGamePatch : ModulePatch
-        {
-            protected override MethodBase GetTargetMethod() =>
-                typeof(GameWorld).GetMethod(nameof(GameWorld.OnGameStarted));
-
-            [PatchPrefix]
-            private static void PatchPrefix()
-            {
-                CodModeComponent.Enable();
-                NoFallingDamageComponent.Enable();
-                MaxStaminaComponent.Enable();
-                HydrationComponent.Enable();
-                EnergyComponent.Enable();
-                MagazineSpeedComponent.Enable();
-            }
-        }
-
+        
         internal sealed class ConfigurationManagerAttributes
         {
             public bool? ShowRangeAsPercent;

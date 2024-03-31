@@ -22,13 +22,10 @@ internal class CodModeComponent : BaseComponent
 
     internal static void Enable()
     {
-        if (Singleton<IBotGame>.Instantiated)
-        {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            gameWorld.GetOrAddComponent<CodModeComponent>();
+        var gameWorld = Singleton<GameWorld>.Instance;
+        gameWorld.GetOrAddComponent<CodModeComponent>();
 
-            Logger.LogInfo("Deminvincibility: CODModeComponent enabled");
-        }
+        Logger.LogInfo("Deminvincibility: CODModeComponent enabled");
     }
 
     private void Start()

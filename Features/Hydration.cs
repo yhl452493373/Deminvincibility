@@ -21,12 +21,9 @@ internal class HydrationComponent : BaseComponent
 
     public static void Enable()
     {
-        if (Singleton<IBotGame>.Instantiated)
-        {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            gameWorld.GetOrAddComponent<HydrationComponent>();
+        var gameWorld = Singleton<GameWorld>.Instance;
+        gameWorld.GetOrAddComponent<HydrationComponent>();
 
-            Logger.LogDebug("Deminvincibility: Setting Max Hydration");
-        }
+        Logger.LogDebug("Deminvincibility: Setting Max Hydration");
     }
 }
