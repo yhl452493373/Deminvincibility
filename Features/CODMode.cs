@@ -2,99 +2,115 @@
 using EFT;
 using EFT.HealthSystem;
 using UnityEngine;
+#if SIT
+using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.AbstractEffect;
+#else
+using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2415;
+#endif
 
-namespace Deminvincibility.Features;
-
-internal class CodModeComponent : BaseComponent
+namespace Deminvincibility.Features
 {
-    private ActiveHealthController healthController;
-    private float timeSinceLastHit;
-    private bool isRegenerating;
-    private float newHealRate;
-    private DamageInfo tmpDmg;
-    private HealthValue currentHealth;
-
-    private readonly EBodyPart[] bodyPartsDict =
+    internal class CodModeComponent : BaseComponent
     {
-        EBodyPart.Stomach, EBodyPart.Chest, EBodyPart.Head, EBodyPart.RightLeg,
-        EBodyPart.LeftLeg, EBodyPart.LeftArm, EBodyPart.RightArm
-    };
+        private ActiveHealthController healthController;
+        private float timeSinceLastHit;
+        private bool isRegenerating;
+        private float newHealRate;
+        private DamageInfo tmpDmg = new();
+        private HealthValue currentHealth;
 
-    internal static void Enable()
-    {
-        var gameWorld = Singleton<GameWorld>.Instance;
-        gameWorld.GetOrAddComponent<CodModeComponent>();
-
-        Logger.LogInfo("Deminvincibility: CODModeComponent enabled");
-    }
-
-    private void Start()
-    {
-        base.Start();
-        healthController = player.ActiveHealthController;
-
-        player.OnPlayerDeadOrUnspawn += Player_OnPlayerDeadOrUnspawn;
-        player.BeingHitAction += Player_BeingHitAction;
-    }
-
-    private void Update()
-    {
-        if (DeminvicibilityPlugin.CODModeToggle.Value)
+        private readonly EBodyPart[] bodyPartsDict =
         {
-            timeSinceLastHit += Time.unscaledDeltaTime;
+            EBodyPart.Stomach, EBodyPart.Chest, EBodyPart.Head, EBodyPart.RightLeg,
+            EBodyPart.LeftLeg, EBodyPart.LeftArm, EBodyPart.RightArm
+        };
 
-            if (timeSinceLastHit >= DeminvicibilityPlugin.CODModeHealWait.Value)
-            {
-                if (!isRegenerating)
-                {
-                    isRegenerating = true;
-                }
+        internal static void Enable()
+        {
+            var gameWorld = Singleton<GameWorld>.Instance;
+            gameWorld.GetOrAddComponent<CodModeComponent>();
 
-                StartHealing();
-            }
+            Logger.LogDebug("Deminvincibility: CodModeComponent enabled");
         }
-    }
 
-    private void StartHealing()
-    {
-        if (isRegenerating && DeminvicibilityPlugin.CODModeToggle.Value)
+        private void Start()
         {
-            newHealRate = DeminvicibilityPlugin.CODModeHealRate.Value;
+            base.Start();
 
-            foreach (var limb in bodyPartsDict)
+            player.OnPlayerDeadOrUnspawn += Player_OnPlayerDeadOrUnspawn;
+            player.BeingHitAction += Player_BeingHitAction;
+            healthController = player.ActiveHealthController;
+            // healthController.EffectAddedEvent += HealthController_EffectAddedEvent;
+        }
+
+        // private void HealthController_EffectAddedEvent(IEffect effect)
+        // {
+        //     if (!(effect is GInterface237) && !(effect is GInterface238))
+        //     {
+        //         healthController.RemoveEffectFromList((AbstractIEffect)effect);
+        //     }
+        // }
+
+        private void Update()
+        {
+            if (DeminvicibilityPlugin.CODModeToggle.Value)
             {
-                currentHealth = healthController.Dictionary_0[limb].Health;
-                if (!currentHealth.AtMaximum)
-                {
-                    currentHealth.Current += newHealRate;
-                }
+                timeSinceLastHit += Time.unscaledDeltaTime;
 
-                if (DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+                if (timeSinceLastHit >= DeminvicibilityPlugin.CODModeHealWait.Value)
                 {
-                    healthController.RemoveNegativeEffects(limb);
+                    if (!isRegenerating)
+                    {
+                        isRegenerating = true;
+                    }
+
+                    StartHealing();
                 }
             }
         }
-    }
 
-    private void Disable()
-    {
-        if (player != null)
+        private void StartHealing()
         {
-            player.OnPlayerDeadOrUnspawn -= Player_OnPlayerDeadOrUnspawn;
-            player.BeingHitAction -= Player_BeingHitAction;
+            if (isRegenerating && DeminvicibilityPlugin.CODModeToggle.Value)
+            {
+                newHealRate = DeminvicibilityPlugin.CODModeHealRate.Value;
+
+                foreach (var limb in bodyPartsDict)
+                {
+                    currentHealth = healthController.Dictionary_0[limb].Health;
+
+                    if (!currentHealth.AtMaximum)
+                    {
+                        currentHealth.Current += newHealRate;
+                    }
+
+                    if (currentHealth.AtMaximum && DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+                    {
+                        healthController.RemoveNegativeEffects(limb);
+                    }
+                }
+            }
         }
-    }
 
-    private void Player_BeingHitAction(DamageInfo arg1, EBodyPart arg2, float arg3)
-    {
-        timeSinceLastHit = 0f;
-        isRegenerating = false;
-    }
+        private void Disable()
+        {
+            if (player != null)
+            {
+                player.OnPlayerDeadOrUnspawn -= Player_OnPlayerDeadOrUnspawn;
+                player.BeingHitAction -= Player_BeingHitAction;
+                // healthController.EffectAddedEvent -= HealthController_EffectAddedEvent;
+            }
+        }
 
+        private void Player_BeingHitAction(DamageInfo arg1, EBodyPart arg2, float arg3)
+        {
+            timeSinceLastHit = 0f;
+            isRegenerating = false;
+        }
 
-    private void Player_OnPlayerDeadOrUnspawn(Player player)
-    {
-        Disable();
+        private void Player_OnPlayerDeadOrUnspawn(Player player)
+        {
+            Disable();
+        }
     }
 }

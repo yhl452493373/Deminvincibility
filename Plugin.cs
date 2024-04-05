@@ -48,6 +48,8 @@ namespace Deminvincibility
             new ApplyDamage().Enable();
             new DoFracture().Enable();
             new Kill().Enable();
+            // new OnWeightUpdatedPatch().Enable();
+            // new UpdateWeightLimitsPatch().Enable();
             new OnGameStarted().Enable();
         }
 
@@ -105,9 +107,9 @@ namespace Deminvincibility
             CODModeToggle = Config.Bind("3. COD", "Enable COD Mode", false, new ConfigDescription(
                 "If enabled, gradually heals all your damage and negative effects over time including bleeds, fractures and others",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 10 }));
-            CODHealEffectsToggle = Config.Bind("3. COD", "Heal Effects", false,
+            CODHealEffectsToggle = Config.Bind("3. COD", "Heal negative effect", false,
                 new ConfigDescription(
-                    "If enabled, Remove all negative health effects when body part begin to heal",
+                    "If enabled, Remove all negative health effects when body part end to heal",
                     null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 9 }));
             CODModeHealWait = Config.Bind("3. COD", "Heal Wait", 10f, new ConfigDescription(
                 "Sets How Long You Have to Wait in Seconds with no damage before healing starts",
@@ -133,12 +135,12 @@ namespace Deminvincibility
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
             MagazineSpeed = Config.Bind("4. QOL", "Magazine Speed", 100, new ConfigDescription(
                 "Magazine load and unload speed multiplier (smaller is faster)",
-                new AcceptableValueRange<int>(0, 100),
+                new AcceptableValueRange<int>(10, 100),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 2 }));
 
-            TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight Reduction", 0, new ConfigDescription(
-                "Percentage to reduce your character's total weight", new AcceptableValueRange<int>(0, 100),
-                new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
+            // TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight Reduction", 0, new ConfigDescription(
+            //     "Percentage to reduce your character's total weight", new AcceptableValueRange<int>(0, 100),
+            //     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
         }
 
         internal sealed class ConfigurationManagerAttributes
