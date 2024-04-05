@@ -104,66 +104,43 @@ namespace Deminvincibility
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
 
             // COD
-            CODModeToggle = Config.Bind("3. COD", "Enable COD Mode", false, new ConfigDescription(
+            CODModeToggle = Config.Bind("3. COD", "Enable COD mode", false, new ConfigDescription(
                 "If enabled, gradually heals all your damage and negative effects over time including bleeds, fractures and others",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 10 }));
             CODHealEffectsToggle = Config.Bind("3. COD", "Heal negative effect", false,
                 new ConfigDescription(
                     "If enabled, Remove all negative health effects when body part end to heal",
                     null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 9 }));
-            CODModeHealWait = Config.Bind("3. COD", "Heal Wait", 10f, new ConfigDescription(
+            CODModeHealWait = Config.Bind("3. COD", "Heal wait", 10f, new ConfigDescription(
                 "Sets How Long You Have to Wait in Seconds with no damage before healing starts",
                 new AcceptableValueRange<float>(0f, 600f),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 8 }));
-            CODModeHealRate = Config.Bind("3. COD", "Heal Rate", 10f, new ConfigDescription(
+            CODModeHealRate = Config.Bind("3. COD", "Heal rate", 10f, new ConfigDescription(
                 "Sets How Fast You Heal",
                 new AcceptableValueRange<float>(0f, 100f),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 7 }));
 
             // QOL
-            MaxStaminaToggle = Config.Bind("4. QOL", "Infinite Stamina", false, new ConfigDescription(
+            MaxStaminaToggle = Config.Bind("4. QOL", "Infinite stamina", false, new ConfigDescription(
                 "Stamina never drains",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 6 }));
-            MaxEnergyToggle = Config.Bind("4. QOL", "Infinite Energy", false, new ConfigDescription(
+            MaxEnergyToggle = Config.Bind("4. QOL", "Infinite energy", false, new ConfigDescription(
                 "Energy never drains so no eating",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 5 }));
-            MaxHydrationToggle = Config.Bind("4. QOL", "Infinite Hydration", false, new ConfigDescription(
+            MaxHydrationToggle = Config.Bind("4. QOL", "Infinite hydration", false, new ConfigDescription(
                 "Hydration never drains so no drinking",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
-            NoFallingDamage = Config.Bind("4. QOL", "No Falling Damage", false, new ConfigDescription(
+            NoFallingDamage = Config.Bind("4. QOL", "No Falling damage", false, new ConfigDescription(
                 "No falling damage",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
-            MagazineSpeed = Config.Bind("4. QOL", "Magazine Speed", 100, new ConfigDescription(
+            MagazineSpeed = Config.Bind("4. QOL", "Magazine speed", 100, new ConfigDescription(
                 "Magazine load and unload speed multiplier (smaller is faster)",
                 new AcceptableValueRange<int>(10, 100),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 2 }));
 
-            // TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight Reduction", 0, new ConfigDescription(
+            // TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight reduction", 0, new ConfigDescription(
             //     "Percentage to reduce your character's total weight", new AcceptableValueRange<int>(0, 100),
             //     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
-        }
-
-        internal sealed class ConfigurationManagerAttributes
-        {
-            public bool? ShowRangeAsPercent;
-            public System.Action<ConfigEntryBase> CustomDrawer;
-            public CustomHotkeyDrawerFunc CustomHotkeyDrawer;
-
-            public delegate void CustomHotkeyDrawerFunc(ConfigEntryBase setting,
-                ref bool isCurrentlyAcceptingInput);
-
-            public bool? Browsable;
-            public string Category;
-            public object DefaultValue;
-            public bool? HideDefaultButton;
-            public bool? HideSettingName;
-            public string Description;
-            public string DispName;
-            public int? Order;
-            public bool? ReadOnly;
-            public bool? IsAdvanced;
-            public System.Func<object, string> ObjToStr;
-            public System.Func<string, object> StrToObj;
         }
     }
 }
