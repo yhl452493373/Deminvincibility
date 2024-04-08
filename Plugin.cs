@@ -27,7 +27,7 @@ namespace Deminvincibility
 
         public static ConfigEntry<bool> CODModeToggle { get; set; }
         public static ConfigEntry<float> CODModeHealRate { get; set; }
-        public static ConfigEntry<float> CODModeHealWait { get; set; }
+        public static ConfigEntry<int> CODModeHealWait { get; set; }
         public static ConfigEntry<bool> CODHealEffectsToggle { get; set; }
 
         public static ConfigEntry<int> MagazineSpeed { get; set; }
@@ -81,7 +81,7 @@ namespace Deminvincibility
                     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
             CustomDamageModeVal = Config.Bind("1. Health", "Damage received percent", 100, new ConfigDescription(
                 "Set perceived damage in percent",
-                new AcceptableValueRange<int>(1, 100),
+                new AcceptableValueRange<int>(0, 100),
                 new ConfigurationManagerAttributes
                     { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
 
@@ -111,13 +111,13 @@ namespace Deminvincibility
                 new ConfigDescription(
                     "If enabled, Remove all negative health effects when body part end to heal",
                     null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 9 }));
-            CODModeHealWait = Config.Bind("3. COD", "Heal wait", 10f, new ConfigDescription(
+            CODModeHealWait = Config.Bind("3. COD", "Heal wait", 10, new ConfigDescription(
                 "Sets How Long You Have to Wait in Seconds with no damage before healing starts",
-                new AcceptableValueRange<float>(0f, 600f),
+                new AcceptableValueRange<int>(0, 600),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 8 }));
             CODModeHealRate = Config.Bind("3. COD", "Heal rate", 10f, new ConfigDescription(
                 "Sets How Fast You Heal",
-                new AcceptableValueRange<float>(0f, 100f),
+                new AcceptableValueRange<float>(1.0f, 100f),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 7 }));
 
             // QOL
@@ -133,14 +133,14 @@ namespace Deminvincibility
             NoFallingDamage = Config.Bind("4. QOL", "No Falling damage", false, new ConfigDescription(
                 "No falling damage",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
-            MagazineSpeed = Config.Bind("4. QOL", "Magazine speed", 100, new ConfigDescription(
-                "Magazine load and unload speed multiplier (smaller is faster)",
-                new AcceptableValueRange<int>(10, 100),
+            MagazineSpeed = Config.Bind("4. QOL", "Magazine speed", 10, new ConfigDescription(
+                "Magazine load and unload speed multiplier in percent (smaller is faster)",
+                new AcceptableValueRange<int>(0, 100),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 2 }));
 
-            // TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight reduction", 0, new ConfigDescription(
-            //     "Percentage to reduce your character's total weight", new AcceptableValueRange<int>(0, 100),
-            //     new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
+            // TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight reduction", 100, new ConfigDescription(
+                // "Percentage to reduce your character's total weight", new AcceptableValueRange<int>(0, 100),
+                // new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
         }
     }
 }

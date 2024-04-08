@@ -1,4 +1,6 @@
-﻿using Comfort.Common;
+﻿using System.Collections.Generic;
+using System.Timers;
+using Comfort.Common;
 using EFT;
 using EFT.HealthSystem;
 using UnityEngine;
@@ -10,25 +12,25 @@ using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2415;
 
 namespace Deminvincibility.Features
 {
-    internal class CodModeComponent : BaseComponent
+    internal class CODModeComponent : BaseComponent
     {
         private ActiveHealthController healthController;
         private float timeSinceLastHit;
-        private bool isRegenerating;
-        private float newHealRate;
-        private DamageInfo tmpDmg = new();
-        private HealthValue currentHealth;
+        private static readonly int healFreq = 16;
+        private static readonly double timerInterval = 1000f / healFreq;
+        private static readonly Timer timer = new(timerInterval);
+
 
         private readonly EBodyPart[] bodyPartsDict =
         {
-            EBodyPart.Stomach, EBodyPart.Chest, EBodyPart.Head, EBodyPart.RightLeg,
-            EBodyPart.LeftLeg, EBodyPart.LeftArm, EBodyPart.RightArm
+            EBodyPart.Head, EBodyPart.Chest, EBodyPart.Stomach, EBodyPart.LeftArm,
+            EBodyPart.RightArm, EBodyPart.LeftLeg, EBodyPart.RightLeg
         };
 
         internal static void Enable()
         {
             var gameWorld = Singleton<GameWorld>.Instance;
-            gameWorld.GetOrAddComponent<CodModeComponent>();
+            gameWorld.GetOrAddComponent<CODModeComponent>();
 
             Logger.LogDebug("Deminvincibility: CodModeComponent enabled");
         }
@@ -41,6 +43,8 @@ namespace Deminvincibility.Features
             player.BeingHitAction += Player_BeingHitAction;
             healthController = player.ActiveHealthController;
             // healthController.EffectAddedEvent += HealthController_EffectAddedEvent;
+            timer.AutoReset = true;
+            timer.Elapsed += StartHealing;
         }
 
         // private void HealthController_EffectAddedEvent(IEffect effect)
@@ -59,34 +63,44 @@ namespace Deminvincibility.Features
 
                 if (timeSinceLastHit >= DeminvicibilityPlugin.CODModeHealWait.Value)
                 {
-                    if (!isRegenerating)
+                    if (!timer.Enabled)
                     {
-                        isRegenerating = true;
+                        timer.Start();
                     }
-
-                    StartHealing();
                 }
+            }
+            else
+            {
+                timer.Stop();
             }
         }
 
-        private void StartHealing()
+        private void StartHealing(object sender, ElapsedEventArgs e)
         {
-            if (isRegenerating && DeminvicibilityPlugin.CODModeToggle.Value)
+            Dictionary<EBodyPart, HealthValue> injuredBodyParts = new Dictionary<EBodyPart, HealthValue>();
+            foreach (var limb in bodyPartsDict)
             {
-                newHealRate = DeminvicibilityPlugin.CODModeHealRate.Value;
-
-                foreach (var limb in bodyPartsDict)
+                var currentHealth = healthController.Dictionary_0[limb].Health;
+                if (currentHealth.AtMaximum)
                 {
-                    currentHealth = healthController.Dictionary_0[limb].Health;
+                    continue;
+                }
 
-                    if (!currentHealth.AtMaximum)
-                    {
-                        currentHealth.Current += newHealRate;
-                    }
+                injuredBodyParts.Add(limb, currentHealth);
+            }
 
-                    if (currentHealth.AtMaximum && DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+            if (!injuredBodyParts.IsNullOrEmpty())
+            {
+                float healRate = DeminvicibilityPlugin.CODModeHealRate.Value / injuredBodyParts.Count / healFreq;
+                foreach (var injuredBodyPart in injuredBodyParts)
+                {
+                    injuredBodyPart.Value.Current += healRate;
+                    if (injuredBodyPart.Value.AtMaximum)
                     {
-                        healthController.RemoveNegativeEffects(limb);
+                        if (DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+                        {
+                            healthController.RemoveNegativeEffects(injuredBodyPart.Key);
+                        }
                     }
                 }
             }
@@ -99,13 +113,14 @@ namespace Deminvincibility.Features
                 player.OnPlayerDeadOrUnspawn -= Player_OnPlayerDeadOrUnspawn;
                 player.BeingHitAction -= Player_BeingHitAction;
                 // healthController.EffectAddedEvent -= HealthController_EffectAddedEvent;
+                timer.Stop();
             }
         }
 
         private void Player_BeingHitAction(DamageInfo arg1, EBodyPart arg2, float arg3)
         {
             timeSinceLastHit = 0f;
-            isRegenerating = false;
+            timer.Stop();
         }
 
         private void Player_OnPlayerDeadOrUnspawn(Player player)

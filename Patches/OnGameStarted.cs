@@ -19,7 +19,7 @@ namespace Deminvincibility.Patches
         [PatchFinalizer]
         private static void Finalizer()
         {
-            CodModeComponent.Enable();
+            CODModeComponent.Enable();
             NoFallingDamageComponent.Enable();
             MaxStaminaComponent.Enable();
             HydrationComponent.Enable();

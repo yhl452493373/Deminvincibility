@@ -35,7 +35,7 @@ namespace Deminvincibility.Patches
                 // Scale damage based on our set damage %
                 if (DeminvicibilityPlugin.CustomDamageModeVal.Value != 100)
                 {
-                    damage *= (float)DeminvicibilityPlugin.CustomDamageModeVal.Value / 100;
+                    damage *= DeminvicibilityPlugin.CustomDamageModeVal.Value / 100f;
                 }
 
                 // Remove negative health effects
