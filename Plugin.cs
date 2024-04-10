@@ -107,21 +107,21 @@ namespace Deminvincibility
             CODModeToggle = Config.Bind("3. COD", "Enable COD mode", false, new ConfigDescription(
                 "If enabled, gradually heals all your damage and negative effects over time including bleeds, fractures and others",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 5 }));
+            CODBleedingDamageToggle = Config.Bind("3. COD", "Bleeding Damage", false, new ConfigDescription(
+                "You still get bleeding and fractures for COD Mode",
+                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
             CODHealEffectsToggle = Config.Bind("3. COD", "Heal negative effect", false,
                 new ConfigDescription(
                     "If enabled, Remove all negative health effects when body part end to heal",
-                    null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
+                    null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
             CODModeHealWait = Config.Bind("3. COD", "Heal wait", 10, new ConfigDescription(
                 "Sets How Long You Have to Wait in Seconds with no damage before healing starts",
                 new AcceptableValueRange<int>(0, 600),
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 3 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
             CODModeHealRate = Config.Bind("3. COD", "Heal rate", 10f, new ConfigDescription(
                 "Sets How Fast You Heal",
                 new AcceptableValueRange<float>(1.0f, 100f),
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
-            CODBleedingDamageToggle = Config.Bind("3. COD", "Bleeding Damage", false, new ConfigDescription(
-                "You still get bleeding and fractures for COD Mode",
-                null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 1 }));
 
             // QOL
             MaxStaminaToggle = Config.Bind("4. QOL", "Infinite stamina", false, new ConfigDescription(
