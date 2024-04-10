@@ -6,7 +6,6 @@ using EFT.HealthSystem;
 using UnityEngine;
 #if SIT
 using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.AbstractEffect;
-
 #else
 using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2415;
 #endif
@@ -96,7 +95,11 @@ namespace Deminvincibility.Features
 
         private void StartHealing(object sender, ElapsedEventArgs e)
         {
+#if SIT
             Dictionary<EBodyPart, AHealthController<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
+#else
+            Dictionary<EBodyPart, GClass2416<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
+#endif
             foreach (var limb in bodyPartsDict)
             {
                 var bodyPartState = healthController.Dictionary_0[limb];

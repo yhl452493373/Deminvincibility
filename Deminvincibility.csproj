@@ -80,8 +80,4 @@
             <Private>False</Private>
         </Reference>
     </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="obj\"/>
-    </ItemGroup>
 </Project>
