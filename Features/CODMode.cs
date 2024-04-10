@@ -83,6 +83,10 @@ namespace Deminvincibility.Features
                 var currentHealth = healthController.Dictionary_0[limb].Health;
                 if (currentHealth.AtMaximum)
                 {
+                    if (DeminvicibilityPlugin.CODHealEffectsToggle.Value)
+                    {
+                        healthController.RemoveNegativeEffects(limb);
+                    }
                     continue;
                 }
 
