@@ -44,12 +44,11 @@ namespace Deminvincibility
 
         private void ApplyPatches()
         {
+            new OnWeightUpdatedPatch().Enable();
             new DestroyBodyPartPatch().Enable();
             new ApplyDamage().Enable();
             new DoFracture().Enable();
             new Kill().Enable();
-            // new OnWeightUpdatedPatch().Enable();
-            // new UpdateWeightLimitsPatch().Enable();
             new OnGameStarted().Enable();
         }
 
@@ -137,13 +136,14 @@ namespace Deminvincibility
                 "No falling damage",
                 null, new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
             MagazineSpeed = Config.Bind("4. QOL", "Magazine speed", 10, new ConfigDescription(
-                "Magazine load and unload speed multiplier in percent (smaller is faster)",
+                "Magazine load and unload speed multiplier in percent. The smaller, the faster",
                 new AcceptableValueRange<int>(0, 100),
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 2 }));
 
-            // TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight reduction", 100, new ConfigDescription(
-            // "Percentage to reduce your character's total weight", new AcceptableValueRange<int>(0, 100),
-            // new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
+            TotalWeightReductionPercentage = Config.Bind("4. QOL", "Weight reduction", 100, new ConfigDescription(
+                "Percentage to reduce the items total weight. Must set before raid. The smaller, the lighter",
+                new AcceptableValueRange<int>(0, 100),
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = true, Order = 1 }));
         }
     }
 }
