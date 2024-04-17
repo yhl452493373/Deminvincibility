@@ -6,6 +6,9 @@ using EFT.HealthSystem;
 using UnityEngine;
 #if SIT
 using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.AbstractEffect;
+#elif SPT_3_9_0
+using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2425;
+
 #else
 using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2415;
 #endif
@@ -31,7 +34,6 @@ namespace Deminvincibility.Features
         {
             var gameWorld = Singleton<GameWorld>.Instance;
             gameWorld.GetOrAddComponent<CODModeComponent>();
-
             Logger.LogDebug("Deminvincibility: CodModeComponent enabled");
         }
 
@@ -52,20 +54,27 @@ namespace Deminvincibility.Features
             if (DeminvicibilityPlugin.CODModeToggle.Value && !DeminvicibilityPlugin.CODBleedingDamageToggle.Value)
             {
                 // ActiveHealthController.cs: public void RemoveNegativeEffects
-#if SIT
+#if SIT && SPT_3_8_0
                 if (!(effect is GInterface236) && !(effect is GInterface237))
                 {
                     //IEffect4 is LightBleeding
                     //IEffect5 is HeavyBleeding
                     //IEffect7 is fracture
-                    //IEffect21 is pain                    
-#else
+                    //IEffect21 is pain    
+#elif SPT_3_8_0
                 if (!(effect is GInterface237) && !(effect is GInterface238))
                 {
                     //GInterface242 is LightBleeding
                     //GInterface243 is HeavyBleeding
                     //GInterface245 is fracture
                     //GInterface259 is pain
+#elif SPT_3_9_0
+                if (!(effect is GInterface251) && !(effect is GInterface252))
+                {
+                    //GInterface256 is LightBleeding
+                    //GInterface257 is HeavyBleeding
+                    //GInterface259 is fracture
+                    //GInterface273 is pain
 #endif
                     //Effect is a Fracture, Bleeding, or Pain and has been removed
                     healthController.RemoveEffectFromList((AbstractIEffect)effect);
@@ -95,10 +104,12 @@ namespace Deminvincibility.Features
 
         private void StartHealing(object sender, ElapsedEventArgs e)
         {
-#if SIT
+#if SIT && SPT_3_8_0
             Dictionary<EBodyPart, AHealthController<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
-#else
+#elif SPT_3_8_0
             Dictionary<EBodyPart, GClass2416<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
+#elif SPT_3_9_0
+            Dictionary<EBodyPart, GClass2426<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
 #endif
             foreach (var limb in bodyPartsDict)
             {
