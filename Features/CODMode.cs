@@ -11,7 +11,7 @@ using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2425;
 #elif SPT_3_8_0
 using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2415;
 #elif SPT_3_9_0
-using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2425;
+using AbstractIEffect = EFT.HealthSystem.ActiveHealthController.GClass2427;
 #endif
 
 namespace Deminvincibility.Features
@@ -54,35 +54,27 @@ namespace Deminvincibility.Features
         {
             if (DeminvicibilityPlugin.CODModeToggle.Value && !DeminvicibilityPlugin.CODBleedingDamageToggle.Value)
             {
-                // ActiveHealthController.cs: public void RemoveNegativeEffects
+                // Search for the following text in ActiveHealthController.cs
+                // public void RemoveNegativeEffects
+                // You will get such text: !(effect is GInterfaceXXX) && !(effect is GInterfaceYYY) 
+                // !(effect is GInterfaceXXX) && !(effect is GInterfaceYYY) is the condition
+                // Additional:
+                // For class LightBleeding, IEffectX or GInterfaceXXX is the Sixth Inherited Object
+                // For class HeavyBleeding, IEffectX or GInterfaceXXX is the Sixth Inherited Object
+                // For class Fracture, IEffectX or GInterfaceXXX is the Sixth Inherited Object
+                // For class Pain, IEffectX or GInterfaceXXX is the Fifth Inherited Object
 #if SPT_3_8_0 && SIT
                 if (!(effect is GInterface236) && !(effect is GInterface237))
                 {
-                    //IEffect4 is LightBleeding
-                    //IEffect5 is HeavyBleeding
-                    //IEffect7 is fracture
-                    //IEffect21 is pain    
 #elif SPT_3_9_0 && SIT
                 if (!(effect is GInterface251) && !(effect is GInterface252))
                 {
-                    //GInterface256 is LightBleeding
-                    //GInterface257 is HeavyBleeding
-                    //GInterface259 is fracture
-                    //GInterface273 is pain
 #elif SPT_3_8_0
                 if (!(effect is GInterface237) && !(effect is GInterface238))
                 {
-                    //GInterface242 is LightBleeding
-                    //GInterface243 is HeavyBleeding
-                    //GInterface245 is fracture
-                    //GInterface259 is pain
 #elif SPT_3_9_0
                 if (!(effect is GInterface251) && !(effect is GInterface252))
                 {
-                    //GInterface256 is LightBleeding
-                    //GInterface257 is HeavyBleeding
-                    //GInterface259 is fracture
-                    //GInterface273 is pain
 #endif
                     //Effect is a Fracture, Bleeding, or Pain and has been removed
                     healthController.RemoveEffectFromList((AbstractIEffect)effect);
@@ -112,6 +104,11 @@ namespace Deminvincibility.Features
 
         private void StartHealing(object sender, ElapsedEventArgs e)
         {
+            // Search for the following text in ActiveHealthController.cs.
+            // >.BodyPartState
+            // You will get such text: A<ActiveHealthController.B>.BodyPartState
+            // GClassXXXX is A
+            // AbstractIEffect is B
 #if SPT_3_8_0 && SIT
             Dictionary<EBodyPart, AHealthController<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
 #elif SPT_3_9_0 && SIT
@@ -119,7 +116,7 @@ namespace Deminvincibility.Features
 #elif SPT_3_8_0
             Dictionary<EBodyPart, GClass2416<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
 #elif SPT_3_9_0
-            Dictionary<EBodyPart, GClass2426<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
+            Dictionary<EBodyPart, GClass2428<AbstractIEffect>.BodyPartState> injuredBodyParts = new();
 #endif
             foreach (var limb in bodyPartsDict)
             {

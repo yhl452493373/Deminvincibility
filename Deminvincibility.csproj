@@ -6,7 +6,7 @@
         <Version>1.0.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
-        <DependencyVersion>0.14.5.6.29744</DependencyVersion>
+        <DependencyVersion>0.14.6.0.29862</DependencyVersion>
 <!--        <DependencyVersion>0.14.5.5.29704-sit</DependencyVersion>-->
     </PropertyGroup>
 
@@ -24,7 +24,7 @@
     <PropertyGroup>
         <DefineConstants Condition="$(DependencyVersion.StartsWith('0.14.1')) and !$(DependencyVersion.EndsWith('sit'))">SPT_3_8_0</DefineConstants>
         <DefineConstants Condition="$(DependencyVersion.StartsWith('0.14.1')) and $(DependencyVersion.EndsWith('sit'))">SPT_3_9_0;SIT</DefineConstants>
-        <DefineConstants Condition="$(DependencyVersion.StartsWith('0.14.5')) and !$(DependencyVersion.EndsWith('sit'))">SPT_3_9_0</DefineConstants>
+        <DefineConstants Condition="$(DependencyVersion.StartsWith('0.14.6')) and !$(DependencyVersion.EndsWith('sit'))">SPT_3_9_0</DefineConstants>
         <DefineConstants Condition="$(DependencyVersion.StartsWith('0.14.5')) and $(DependencyVersion.EndsWith('sit'))">SPT_3_9_0;SIT</DefineConstants>
     </PropertyGroup>
     
